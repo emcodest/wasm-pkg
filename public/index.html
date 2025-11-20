@@ -40,14 +40,33 @@
     <div id="preview"></div>
     <!-- to be called by rust -->
     <script src="./js/script.js"></script>
-    <script type="module">
-        import init from './pkg/image_editor_wasm.js';
-        await init();
+   <script type="module">
+  import init, { greet, show_file_preview } from './pkg/image_editor_wasm.js';  // ← bundler exports named funcs
 
-        const zone = document.getElementById('drop-zone');
-        ['dragover', 'dragenter'].forEach(e => zone.addEventListener(e, () => zone.classList.add('dragover')));
-        ['dragleave', 'drop'].forEach(e => zone.addEventListener(e, () => zone.classList.remove('dragover')));
-    </script>
+  async function run() {
+    try {
+      await init('./pkg/image_editor_wasm_bg.wasm');  // ← explicit WASM path (fixes fetch)
+      console.log("Wasm init SUCCESS! Rust is loaded.");
+
+      // Expose to global (for onclick, etc.)
+      window.greet = greet;
+      window.show_file_preview = show_file_preview;
+
+      // Your drag/drop listeners here (same as before)
+      const zone = document.getElementById('drop-zone');
+      ['dragover', 'dragenter'].forEach(e => 
+        zone.addEventListener(e, () => zone.classList.add('dragover'))
+      );
+      ['dragleave', 'drop'].forEach(e => 
+        zone.addEventListener(e, () => zone.classList.remove('dragover'))
+      );
+
+    } catch (error) {
+      console.error("Wasm init FAILED:", error);
+    }
+  }
+  run();
+</script>
 </body>
 
 </html>
