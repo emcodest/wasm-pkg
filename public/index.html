@@ -39,10 +39,10 @@
     <h1>PREVIEW</h1>
     <div id="preview"></div>
     <!-- to be called by rust -->
-    <script src="./js/script.js"></script>
+    <script src="/js/script.js"></script>
     <script type="module">
-        import init from './pkg/image_editor_wasm.js';
-        await init();
+        import init from '/pkg/image_editor_wasm.js';
+        await init('/pkg/image_editor_wasm_bg.wasm');
 
         const zone = document.getElementById('drop-zone');
         ['dragover', 'dragenter'].forEach(e => zone.addEventListener(e, () => zone.classList.add('dragover')));
